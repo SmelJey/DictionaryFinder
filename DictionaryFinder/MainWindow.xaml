@@ -14,8 +14,16 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="30px"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBox Height="25" FontSize="14" Name="SearchField" TextChanged="SearchField_OnTextChanged" Margin="5" VerticalAlignment="Center"></TextBox>
-        <TextBlock Height="25" FontSize="14" IsHitTestVisible="False" Text="Find anything" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="150"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBox 
+            Name="SearchField" Height="25" FontSize="14" TextChanged="SearchField_OnTextChanged" Margin="5" VerticalAlignment="Center">
+        </TextBox>
+        <TextBlock 
+            Height="25" FontSize="14" IsHitTestVisible="False" Text="Find anything" VerticalAlignment="Center" HorizontalAlignment="Left"
+            Margin="10,0,0,0" Foreground="DarkGray">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -27,8 +35,13 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <Label VerticalAlignment="Center" Content="Sequence Search:"></Label>
+            <CheckBox Name="SeqSearchCheckbox" VerticalAlignment="Center" Checked="SeqSearchCheckbox_OnChecked" Unchecked="SeqSearchCheckbox_OnChecked"></CheckBox>
+        </StackPanel>
         <Label Grid.Row="1">Search results:</Label>
-        <ListView Grid.Row="2" Name="ResultView" ItemsSource="{Binding ElementName=DictionaryWindow, Path=SearchResults}">
+        <ListView Name="ResultView" Grid.Row="2" Grid.ColumnSpan="2"
+                  ItemsSource="{Binding ElementName=DictionaryWindow, Path=SearchResults}">
         </ListView>
         <Label Grid.Row="3" Name="StatusLabel">Ready</Label>
     </Grid>

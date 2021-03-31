@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
 namespace DictionaryFinder {
@@ -19,6 +14,29 @@ namespace DictionaryFinder {
                 if (result != null) return result;
             }
             return null;
+        }
+
+        public static bool Contains(this string text, string sequence, bool isSeqSearch)
+        {
+            if (!isSeqSearch)
+            {
+                return text.Contains(sequence);
+            }
+
+            int seqIdx = 0;
+            foreach (char c in text)
+            {
+                if (c == sequence[seqIdx])
+                {
+                    seqIdx++;
+                    if (seqIdx == sequence.Length)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

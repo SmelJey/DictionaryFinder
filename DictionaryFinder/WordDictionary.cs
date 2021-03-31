@@ -1,34 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DictionaryFinder {
     class WordDictionary {
         public WordDictionary(string filepath)
         {
-            using (var streamReader = new StreamReader(filepath))
-            {
-                while (!streamReader.EndOfStream)
-                {
-                    words.Add(streamReader.ReadLine());
-                }
-            }
+            myFilePath = filepath;
         }
 
-        public IEnumerable<string> GetMatches(string request)
+        public IEnumerable<string> GetMatches(string request, bool isSeqSeach)
         {
-            foreach (var word in words)
-            {
-                if (word.Contains(request))
-                {
-                    yield return word;
+            using (var streamReader = new StreamReader(myFilePath)) {
+                while (!streamReader.EndOfStream) {
+                    var currentWord = streamReader.ReadLine();
+                    if (currentWord.Contains(request, isSeqSeach)) {
+                        yield return currentWord;
+                    }
                 }
             }
         }
 
-        private List<string> words = new List<string>();
+        private string myFilePath;
     }
 }
