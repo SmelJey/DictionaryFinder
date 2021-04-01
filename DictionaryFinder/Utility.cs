@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 
 namespace DictionaryFinder {
@@ -24,15 +25,12 @@ namespace DictionaryFinder {
             }
 
             int seqIdx = 0;
-            foreach (char c in text)
+            foreach (var c in text.Where(c => c == sequence[seqIdx]))
             {
-                if (c == sequence[seqIdx])
+                seqIdx++;
+                if (seqIdx == sequence.Length)
                 {
-                    seqIdx++;
-                    if (seqIdx == sequence.Length)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 

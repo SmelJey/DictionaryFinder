@@ -21,6 +21,6 @@ namespace DictionaryFinder {
             }
         }
 
-        private string myFilePath;
+        private readonly string myFilePath;
     }
 }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DictionaryFinder"
         mc:Ignorable="d"
         Name="DictionaryWindow"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Dictionary" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40px"></RowDefinition>
@@ -39,10 +39,11 @@
             <Label VerticalAlignment="Center" Content="Sequence Search:"></Label>
             <CheckBox Name="SeqSearchCheckbox" VerticalAlignment="Center" Checked="SeqSearchCheckbox_OnChecked" Unchecked="SeqSearchCheckbox_OnChecked"></CheckBox>
         </StackPanel>
-        <Label Grid.Row="1">Search results:</Label>
+        <TextBlock Name="ResultsLabel" Grid.Row="1" Margin="10, 0, 0, 0"
+                   Text="{Binding ElementName=DictionaryWindow, Path=SearchHeader}"></TextBlock>
         <ListView Name="ResultView" Grid.Row="2" Grid.ColumnSpan="2"
                   ItemsSource="{Binding ElementName=DictionaryWindow, Path=SearchResults}">
         </ListView>
-        <Label Grid.Row="3" Name="StatusLabel">Ready</Label>
+        <TextBlock Grid.Row="3" Name="StatusLabel">Ready</TextBlock>
     </Grid>
 </Window>
