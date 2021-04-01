@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using DictionaryFinder.Annotations;
 
 
 namespace DictionaryFinder {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public const int ItemsPerPage = 50;
+        public const int DefaultItemsPerPage = 100;
+        private int myItemsPerPage = DefaultItemsPerPage;
 
         private int myTotalResultsCnt;
 
@@ -50,12 +52,13 @@ namespace DictionaryFinder {
             myDictionary = new WordDictionary("dict.txt");
             SearchResults = new ObservableCollection<string>();
             InitializeComponent();
+
             Dispatcher.Invoke(async () =>
             {
                 // idk when ListView's ScrollViewer is initialized
                 while (myListScrollViewer == null)
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(500);
 
                     myListScrollViewer = ResultView.GetChildOfType<ScrollViewer>();
                     if (myListScrollViewer != null) {
@@ -90,6 +93,7 @@ namespace DictionaryFinder {
                 return;
             }
 
+            StatusLabel.Text = "Search in progress...";
             bool isSeqSearch = SeqSearchCheckbox.IsChecked.GetValueOrDefault(false);
 
             await Task.Run(() => LoadData(request, isSeqSearch, myLoadingTokenSource.Token), myLoadingTokenSource.Token);
@@ -97,11 +101,6 @@ namespace DictionaryFinder {
 
         private Task LoadData(string request, bool isSeqSearch, CancellationToken ct)
         {
-            Dispatcher.Invoke(() =>
-            {
-                StatusLabel.Text = "Search in progress...";
-            });
-
             foreach (var res in myDictionary.GetMatches(request, isSeqSearch)) {
                 if (ct.IsCancellationRequested) {
                     return Task.CompletedTask;
@@ -115,7 +114,7 @@ namespace DictionaryFinder {
                         return;
                     }
 
-                    if (SearchResults.Count >= ItemsPerPage)
+                    if (SearchResults.Count >= myItemsPerPage)
                     {
                         myResponseBuffer.Enqueue(res);
                     }
@@ -129,7 +128,7 @@ namespace DictionaryFinder {
 
             Dispatcher.Invoke(() => {
                 StatusLabel.Text = "Ready!";
-            });
+            }, DispatcherPriority.Background);
 
             return Task.CompletedTask;
         }
@@ -141,7 +140,7 @@ namespace DictionaryFinder {
             }
 
             if (Math.Abs(e.VerticalOffset + e.ViewportHeight - e.ExtentHeight) < float.Epsilon) {
-                LoadBufferedData();
+                LoadBufferedData(myItemsPerPage);
                 AfterScrollingLoad();
             }
         }
@@ -169,13 +168,13 @@ namespace DictionaryFinder {
             if (Math.Abs(myListScrollViewer.VerticalOffset + myListScrollViewer.ViewportHeight - myListScrollViewer.ExtentHeight)
                 < float.Epsilon)
             {
-                LoadBufferedData();
+                LoadBufferedData(myItemsPerPage);
             }
         }
 
-        private void LoadBufferedData()
+        private void LoadBufferedData(int cnt)
         {
-            for (int i = 0; i < ItemsPerPage; i++)
+            for (int i = 0; i < cnt; i++)
             {
                 if (myResponseBuffer.Count == 0)
                 {
@@ -183,6 +182,20 @@ namespace DictionaryFinder {
                 }
 
                 AddItemToList(myResponseBuffer.Dequeue());
+            }
+        }
+
+        private void ResultView_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            myItemsPerPage = (int)(e.NewSize.Height * 3 / 20);
+            if (myItemsPerPage == 0)
+            {
+                myItemsPerPage = DefaultItemsPerPage;
+            }
+
+            if (SearchResults.Count < myItemsPerPage)
+            {
+                LoadBufferedData(myItemsPerPage - SearchResults.Count);
             }
         }
     }

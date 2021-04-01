@@ -10,9 +10,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40px"></RowDefinition>
-            <RowDefinition Height="30px"></RowDefinition>
+            <RowDefinition Height="20px"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="30px"></RowDefinition>
+            <RowDefinition Height="20px"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -41,9 +41,9 @@
         </StackPanel>
         <TextBlock Name="ResultsLabel" Grid.Row="1" Margin="10, 0, 0, 0"
                    Text="{Binding ElementName=DictionaryWindow, Path=SearchHeader}"></TextBlock>
-        <ListView Name="ResultView" Grid.Row="2" Grid.ColumnSpan="2"
+        <ListView Name="ResultView" Grid.Row="2" Grid.ColumnSpan="2" SizeChanged="ResultView_OnSizeChanged"
                   ItemsSource="{Binding ElementName=DictionaryWindow, Path=SearchResults}">
         </ListView>
-        <TextBlock Grid.Row="3" Name="StatusLabel">Ready</TextBlock>
+        <TextBlock Name="StatusLabel" Grid.Row="3" Margin="10, 0, 0, 0">Ready</TextBlock>
     </Grid>
 </Window>
