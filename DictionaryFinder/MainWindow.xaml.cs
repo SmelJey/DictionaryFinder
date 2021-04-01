@@ -14,7 +14,7 @@ using DictionaryFinder.Annotations;
 namespace DictionaryFinder {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public const int DefaultItemsPerPage = 100;
+        public const int DefaultItemsPerPage = 25;
         private int myItemsPerPage = DefaultItemsPerPage;
 
         private int myTotalResultsCnt;
@@ -188,7 +188,7 @@ namespace DictionaryFinder {
         private void ResultView_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             myItemsPerPage = (int)(e.NewSize.Height * 3 / 20);
-            if (myItemsPerPage == 0)
+            if (myItemsPerPage < DefaultItemsPerPage)
             {
                 myItemsPerPage = DefaultItemsPerPage;
             }
