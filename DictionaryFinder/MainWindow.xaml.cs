@@ -62,7 +62,7 @@ namespace DictionaryFinder {
 
                     myListScrollViewer = ResultView.GetChildOfType<ScrollViewer>();
                     if (myListScrollViewer != null) {
-                        myListScrollViewer.ScrollChanged += ProcessScrolling;
+                        myListScrollViewer.ScrollChanged += ProcessScrollingAsync;
                         return;
                     }
                 }
@@ -133,7 +133,7 @@ namespace DictionaryFinder {
             return Task.CompletedTask;
         }
 
-        private void ProcessScrolling(object sender, ScrollChangedEventArgs e)
+        private async void ProcessScrollingAsync(object sender, ScrollChangedEventArgs e)
         {
             if (e.VerticalChange <= 0 || Math.Abs(e.VerticalChange - e.ExtentHeightChange) < float.Epsilon) {
                 return;
@@ -141,7 +141,7 @@ namespace DictionaryFinder {
 
             if (Math.Abs(e.VerticalOffset + e.ViewportHeight - e.ExtentHeight) < float.Epsilon) {
                 LoadBufferedData(myItemsPerPage);
-                AfterScrollingLoad();
+                await AfterScrollingLoadAsync();
             }
         }
 
@@ -151,7 +151,7 @@ namespace DictionaryFinder {
             OnPropertyChanged(nameof(SearchHeader));
         }
 
-        private async void AfterScrollingLoad()
+        private async Task AfterScrollingLoadAsync()
         {
             myScrollHandlingTokenSource?.Cancel();
             myScrollHandlingTokenSource = new CancellationTokenSource();
